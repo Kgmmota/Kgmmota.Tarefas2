@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-// Interface
+
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
+
 import { IListItems } from '../../interface/IListItems.iterface';
 
 @Component({
   selector: 'app-input-list-item',
   standalone: true,
-  imports: [],
+
+  imports: [DragDropModule], 
   templateUrl: './input-list-item.component.html',
   styleUrl: './input-list-item.component.scss',
 })
@@ -33,4 +36,6 @@ export class InputListItemComponent {
   public deleteItem(id: string) {
     return this.outputDeleteItem.emit(id);
   }
+
+  @Output() public outputMoveItem = new EventEmitter<CdkDragDrop<IListItems[]>>();
 }

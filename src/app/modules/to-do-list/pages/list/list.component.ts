@@ -1,5 +1,8 @@
-import { Component, signal, computed } from '@angular/core'; // <--- ADICIONE computed
+import { Component, signal, computed } from '@angular/core';
 import Swal from 'sweetalert2';
+
+// 👇 1. VOCÊ PRECISA DESSA IMPORTAÇÃO AQUI NO TOPO! 👇
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { InputAddItemComponent } from '../../components/input-add-item/input-add-item.component';
 import { InputListItemComponent } from '../../components/input-list-item/input-list-item.component';
@@ -19,9 +22,7 @@ export class ListComponent {
   #setListItems = signal<IListItems[]>(this.#parseItems());
   public getListItems = this.#setListItems.asReadonly();
 
-  
   public filterStatus = signal<'all' | 'pending' | 'completed'>('all');
-
 
   public listItemsFiltered = computed(() => {
     const filter = this.filterStatus();
@@ -35,9 +36,8 @@ export class ListComponent {
       return list.filter((res) => res.checked);
     }
 
-    return list; 
+    return list;
   });
-  
 
   #parseItems() {
     return JSON.parse(localStorage.getItem(ELocalStorage.MY_LIST) || '[]');
@@ -117,5 +117,17 @@ export class ListComponent {
         return this.#setListItems.set(this.#parseItems());
       }
     });
+  }
+
+  // 👇 2. A FUNÇÃO TEM QUE ESTAR AQUI NO FINAL DA CLASSE 👇
+  public moveItem(event: CdkDragDrop<IListItems[]>) {
+    if(this.filterStatus() !== 'all') return;
+
+    this.#setListItems.update((currentList) => {
+      const newList = [...currentList];
+      moveItemInArray(newList, event.previousIndex, event.currentIndex);
+      return newList;
+    });
+    this.#updateLocalStorage();
   }
 }
