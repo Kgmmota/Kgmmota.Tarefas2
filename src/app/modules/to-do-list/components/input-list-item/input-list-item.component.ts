@@ -1,8 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-
 import { IListItems } from '../../interface/IListItems.iterface';
 
 @Component({
