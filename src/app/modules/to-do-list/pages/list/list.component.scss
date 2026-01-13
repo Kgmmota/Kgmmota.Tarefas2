@@ -23,7 +23,7 @@
   main.container {
     height: calc(100vh - 130px - 90px);
     height: calc(100dvh - 130px - 90px);
-
+    width: 100%; 
     overflow-y: auto;
 
     &::-webkit-scrollbar {
@@ -37,6 +37,50 @@
     &::-webkit-scrollbar-thumb {
       background: var(--primary);
       border-radius: 5px;
+    }
+
+    .filter-buttons {
+      position: sticky; 
+      top: 0;
+      z-index: 10;
+      background-color: #252525; 
+      
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 0;
+      margin-bottom: 10px;
+      
+      
+      border-bottom: 1px solid var(--black-010); 
+
+      button {
+        background: var(--black-010); 
+        color: #fff;
+        border: 1px solid #333;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 0.85rem;
+        font-weight: 500;
+
+        &:hover {
+          filter: brightness(1.2);
+        }
+
+        &.active {
+          background: var(--primary);
+          border-color: var(--primary);
+          font-weight: 700;
+        }
+      }
+    }
+
+    .empty-filter-msg {
+      text-align: center;
+      color: #777;
+      margin-top: 30px;
     }
   }
 

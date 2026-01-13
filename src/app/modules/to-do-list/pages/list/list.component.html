@@ -1,53 +1,64 @@
 @if(!getListItems().length){
-<div class="container">
-  <img
-    src="assets/img/task-list-null.png"
-    alt="Sua lista está vazia - imagem ilustrativa"
-    loading="eager"
-  />
+  <div class="container">
+    <img
+      src="assets/img/task-list-null.png"
+      alt="Sua lista está vazia - imagem ilustrativa"
+      loading="eager"
+    />
 
-  @if(addItem()){
-  <button class="btn btn-primary" (click)="addItem.set(false)">
-    Crie uma lista de tarefas
-  </button>
-  } @else {
+    @if(addItem()){
+    <button class="btn btn-primary" (click)="addItem.set(false)">
+      Crie uma lista de tarefas
+    </button>
+    } @else {
+    <app-input-add-item
+      [inputListItems]="getListItems()"
+      (outputAddListItem)="getInputAndAddItem($event)"
+    />
+    }
+  </div>
+} @else {
   <app-input-add-item
     [inputListItems]="getListItems()"
     (outputAddListItem)="getInputAndAddItem($event)"
   />
-  }
-</div>
-} @else {
-<app-input-add-item
-  [inputListItems]="getListItems()"
-  (outputAddListItem)="getInputAndAddItem($event)"
-/>
 
-<main class="container">
-  @if(listItemsStage('pending').length){
-  <h2>Pendências</h2>
-  <app-input-list-item
-    [inputListItems]="listItemsStage('pending')"
-    (outputUpdateItemCheckbox)="updateItemCheckbox($event)"
-    (outputUpdateItemText)="updateItemText($event)"
-    (outputDeleteItem)="deleteItem($event)"
-  />
-  }
+  <main class="container">
+    <div class="filter-buttons">
+      <button 
+        (click)="filterStatus.set('all')" 
+        [class.active]="filterStatus() === 'all'">
+        Todos
+      </button>
+      
+      <button 
+        (click)="filterStatus.set('pending')" 
+        [class.active]="filterStatus() === 'pending'">
+        Pendentes
+      </button>
+      
+      <button 
+        (click)="filterStatus.set('completed')" 
+        [class.active]="filterStatus() === 'completed'">
+        Concluídos
+      </button>
+    </div>
 
-  @if(listItemsStage('completed').length){
-  <h2>Concluídas</h2>
-  <app-input-list-item
-    [inputListItems]="listItemsStage('completed')"
-    (outputUpdateItemCheckbox)="updateItemCheckbox($event)"
-    (outputUpdateItemText)="updateItemText($event)"
-    (outputDeleteItem)="deleteItem($event)"
-  />
-  }
-</main>
+    @if(listItemsFiltered().length){
+      <app-input-list-item
+        [inputListItems]="listItemsFiltered()"
+        (outputUpdateItemCheckbox)="updateItemCheckbox($event)"
+        (outputUpdateItemText)="updateItemText($event)"
+        (outputDeleteItem)="deleteItem($event)"
+      />
+    } @else {
+      <p class="empty-filter-msg">Nenhum item encontrado neste filtro.</p>
+    }
+  </main>
 
-<footer>
-  <button class="btn btn-danger" (click)="deleteAllItems()">
-    Deletar todos os Items
-  </button>
-</footer>
+  <footer>
+    <button class="btn btn-danger" (click)="deleteAllItems()">
+      Deletar todos os Items
+    </button>
+  </footer>
 }

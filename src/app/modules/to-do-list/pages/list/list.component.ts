@@ -1,14 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core'; // <--- ADICIONE computed
 import Swal from 'sweetalert2';
 
-// Components
 import { InputAddItemComponent } from '../../components/input-add-item/input-add-item.component';
 import { InputListItemComponent } from '../../components/input-list-item/input-list-item.component';
-
-// Interface
 import { IListItems } from '../../interface/IListItems.iterface';
-
-// Enum
 import { ELocalStorage } from '../../enum/ELocalStorage.enum';
 
 @Component({
@@ -23,6 +18,26 @@ export class ListComponent {
 
   #setListItems = signal<IListItems[]>(this.#parseItems());
   public getListItems = this.#setListItems.asReadonly();
+
+  
+  public filterStatus = signal<'all' | 'pending' | 'completed'>('all');
+
+
+  public listItemsFiltered = computed(() => {
+    const filter = this.filterStatus();
+    const list = this.#setListItems();
+
+    if (filter === 'pending') {
+      return list.filter((res) => !res.checked);
+    }
+
+    if (filter === 'completed') {
+      return list.filter((res) => res.checked);
+    }
+
+    return list; 
+  });
+  
 
   #parseItems() {
     return JSON.parse(localStorage.getItem(ELocalStorage.MY_LIST) || '[]');
@@ -44,20 +59,6 @@ export class ListComponent {
     return this.#setListItems.set(this.#parseItems());
   }
 
-  public listItemsStage(value: 'pending' | 'completed') {
-    return this.getListItems().filter((res: IListItems) => {
-      if (value === 'pending') {
-        return !res.checked;
-      }
-
-      if (value === 'completed') {
-        return res.checked;
-      }
-
-      return res;
-    });
-  }
-
   public updateItemCheckbox(newItem: { id: string; checked: boolean }) {
     this.#setListItems.update((oldValue: IListItems[]) => {
       oldValue.filter((res) => {
@@ -65,13 +66,10 @@ export class ListComponent {
           res.checked = newItem.checked;
           return res;
         }
-
         return res;
       });
-
       return oldValue;
     });
-
     return this.#updateLocalStorage();
   }
 
@@ -82,13 +80,10 @@ export class ListComponent {
           res.value = newItem.value;
           return res;
         }
-
         return res;
       });
-
       return oldValue;
     });
-
     return this.#updateLocalStorage();
   }
 
@@ -104,7 +99,6 @@ export class ListComponent {
         this.#setListItems.update((oldValue: IListItems[]) => {
           return oldValue.filter((res) => res.id !== id);
         });
-
         return this.#updateLocalStorage();
       }
     });
