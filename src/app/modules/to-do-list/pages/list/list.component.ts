@@ -1,7 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import Swal from 'sweetalert2';
 
-// 👇 1. VOCÊ PRECISA DESSA IMPORTAÇÃO AQUI NO TOPO! 👇
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { InputAddItemComponent } from '../../components/input-add-item/input-add-item.component';
@@ -119,7 +118,6 @@ export class ListComponent {
     });
   }
 
-  // 👇 2. A FUNÇÃO TEM QUE ESTAR AQUI NO FINAL DA CLASSE 👇
   public moveItem(event: CdkDragDrop<IListItems[]>) {
     if(this.filterStatus() !== 'all') return;
 
